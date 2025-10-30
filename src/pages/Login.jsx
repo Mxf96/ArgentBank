@@ -8,7 +8,7 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Login attempted:", { email, password, remember });
-    // 👉 Ici tu ajouteras plus tard la logique Redux / API
+    // API
   };
 
   return (
