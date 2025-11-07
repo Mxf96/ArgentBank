@@ -28,7 +28,7 @@ export default function Header() {
     };
 
     fetchUser();
-  }, [location]); // 👈 se relance à chaque navigation (login/logout)
+  }, [location]); // se relance à chaque navigation (login/logout)
 
   const handleLogout = () => {
     localStorage.removeItem("token");
