@@ -45,7 +45,6 @@ export default function Header() {
           src={argentBankLogo}
           alt="Argent Bank Logo"
         />
-        <h1 className="sr-only">Argent Bank</h1>
       </Link>
 
       <div>
