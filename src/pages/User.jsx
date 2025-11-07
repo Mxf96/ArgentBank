@@ -21,7 +21,7 @@ export default function User() {
         const profile = await getUserProfile(token);
         setUser(profile);
 
-        // Simule des comptes rattachés à l'utilisateur
+        // Simulation des comptes des users
         setAccounts([
           {
             id: 1,

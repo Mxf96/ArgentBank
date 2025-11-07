@@ -23,7 +23,7 @@ export default function Login() {
         sessionStorage.setItem("token", token);
       }
 
-      navigate("/user"); // Redirige vers la page utilisateur
+      navigate("/user");
     } catch (err) {
       setError("Invalid email or password");
       console.error(err);
