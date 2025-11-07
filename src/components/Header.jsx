@@ -6,7 +6,7 @@ import { getUserProfile } from "../api/api";
 export default function Header() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const location = useLocation(); // 👈 pour détecter les changements de route
+  const location = useLocation(); // pour détecter les changements de route
 
   useEffect(() => {
     const token =
@@ -69,8 +69,7 @@ export default function Header() {
                 fontSize: "16px",
               }}
             >
-              <i className="fa fa-sign-out"></i>
-              <strong> Sign Out</strong>
+              <i className="fa fa-sign-out"></i>Sign Out
             </button>
           </>
         )}
