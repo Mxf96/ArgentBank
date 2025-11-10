@@ -1,32 +1,23 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { login, fetchUserProfile } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../api/api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
-  const [error, setError] = useState("");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.user);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    const result = await dispatch(login({ email, password, remember }));
 
-    try {
-      const token = await loginUser(email, password);
-
-      // Sauvegarde le token (localStorage ou sessionStorage)
-      if (remember) {
-        localStorage.setItem("token", token);
-      } else {
-        sessionStorage.setItem("token", token);
-      }
-
+    if (result.meta.requestStatus === "fulfilled") {
+      await dispatch(fetchUserProfile());
       navigate("/user");
-    } catch (err) {
-      setError("Invalid email or password");
-      console.error(err);
     }
   };
 
@@ -70,8 +61,8 @@ export default function Login() {
 
           {error && <p style={{ color: "red" }}>{error}</p>}
 
-          <button className="sign-in-button" type="submit">
-            Sign In
+          <button className="sign-in-button" type="submit" disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
       </section>

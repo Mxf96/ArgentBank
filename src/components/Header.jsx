@@ -1,39 +1,15 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import argentBankLogo from "../assets/img/argentBankLogo.png";
-import { getUserProfile } from "../api/api";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../features/userSlice";
 
 export default function Header() {
-  const [user, setUser] = useState(null);
+  const { profile } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation(); // pour détecter les changements de route
-
-  useEffect(() => {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
-    if (!token) {
-      setUser(null);
-      return;
-    }
-
-    const fetchUser = async () => {
-      try {
-        const profile = await getUserProfile(token);
-        setUser(profile);
-      } catch (err) {
-        console.error(err);
-        setUser(null);
-      }
-    };
-
-    fetchUser();
-  }, [location]); // se relance à chaque navigation (login/logout)
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
-    setUser(null);
+    dispatch(logout());
     navigate("/login");
   };
 
@@ -48,14 +24,14 @@ export default function Header() {
       </Link>
 
       <div>
-        {!user ? (
+        {!profile ? (
           <Link className="main-nav-item" to="/login">
             <i className="fa fa-user-circle"></i> Sign In
           </Link>
         ) : (
           <>
             <Link className="main-nav-item" to="/user">
-              <i className="fa fa-user-circle"></i> {user.firstName}
+              <i className="fa fa-user-circle"></i> {profile.firstName}
             </Link>
             <button
               onClick={handleLogout}
@@ -68,7 +44,8 @@ export default function Header() {
                 fontSize: "16px",
               }}
             >
-              <i className="fa fa-sign-out"></i>Sign Out
+              <i className="fa fa-sign-out"></i>
+              <strong> Sign Out</strong>
             </button>
           </>
         )}
