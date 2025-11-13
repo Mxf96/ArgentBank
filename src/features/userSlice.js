@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { loginUser, getUserProfile } from "../api/api";
 
-// === Thunk pour login ===
+/* === LOGIN USER === */
 export const login = createAsyncThunk(
   "user/login",
   async ({ email, password, remember }, thunkAPI) => {
@@ -19,7 +19,7 @@ export const login = createAsyncThunk(
   }
 );
 
-// === Thunk pour récupérer le profil ===
+/* === FETCH USER PROFILE === */
 export const fetchUserProfile = createAsyncThunk(
   "user/fetchProfile",
   async (_, thunkAPI) => {
@@ -35,6 +35,38 @@ export const fetchUserProfile = createAsyncThunk(
   }
 );
 
+/* === UPDATE USER PROFILE === */
+export const updateUserProfile = createAsyncThunk(
+  "user/updateProfile",
+  async ({ firstName, lastName }, thunkAPI) => {
+    try {
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
+      if (!token) throw new Error("No token found");
+
+      const response = await fetch(
+        "http://localhost:3001/api/v1/user/profile",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ firstName, lastName }),
+        }
+      );
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Update failed");
+
+      return data.body; // profil mis à jour
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+
+/* === SLICE === */
 const userSlice = createSlice({
   name: "user",
   initialState: {
@@ -53,6 +85,7 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      /* Login */
       .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -65,7 +98,12 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      /* Fetch profile */
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.profile = action.payload;
+      })
+      /* Update profile */
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.profile = action.payload;
       });
   },
