@@ -16,7 +16,7 @@ export const login = createAsyncThunk(
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
     }
-  }
+  },
 );
 
 /* === FETCH USER PROFILE === */
@@ -32,7 +32,7 @@ export const fetchUserProfile = createAsyncThunk(
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
     }
-  }
+  },
 );
 
 /* === UPDATE USER PROFILE === */
@@ -44,17 +44,15 @@ export const updateUserProfile = createAsyncThunk(
         localStorage.getItem("token") || sessionStorage.getItem("token");
       if (!token) throw new Error("No token found");
 
-      const response = await fetch(
-        "http://localhost:3001/api/v1/user/profile",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ firstName, lastName }),
-        }
-      );
+      const API_URL = import.meta.env.VITE_API_BASE_URL;
+      const response = await fetch(`${API_URL}/user/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ firstName, lastName }),
+      });
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Update failed");
@@ -63,7 +61,7 @@ export const updateUserProfile = createAsyncThunk(
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
     }
-  }
+  },
 );
 
 /* === SLICE === */
