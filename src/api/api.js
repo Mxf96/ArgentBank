@@ -8,9 +8,7 @@ export async function loginUser(email, password) {
   });
 
   const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Login failed");
-  }
+  if (!response.ok) throw new Error(data.message || "Login failed");
 
   return data.body.token;
 }
@@ -25,9 +23,23 @@ export async function getUserProfile(token) {
   });
 
   const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to fetch profile");
-  }
+  if (!response.ok) throw new Error(data.message || "Failed to fetch profile");
 
   return data.body;
+}
+
+export async function updateUserProfileApi(token, firstName, lastName) {
+  const response = await fetch(`${API_URL}/user/profile`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ firstName, lastName }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Update failed");
+
+  return data.body; // profil mis à jour
 }
